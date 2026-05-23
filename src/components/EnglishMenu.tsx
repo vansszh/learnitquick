@@ -10,18 +10,18 @@ import {
   Star,
   ChevronRight,
   Sparkles,
-  GraduationCap,
+  BookOpen,
 } from 'lucide-react';
 
-const gameModes: GameMode[] = [
-  'tables',
-  'comparison',
-  'addition',
-  'subtraction',
-  'multiplication',
-  'carry-addition',
-  'counting',
-  'number-sequence',
+const englishModes: GameMode[] = [
+  'spelling',
+  'rhymes',
+  'opposites',
+  'synonyms',
+  'phonics',
+  'missing-letter',
+  'plurals',
+  'picture-match',
 ];
 
 const difficultyConfig: Record<
@@ -33,7 +33,7 @@ const difficultyConfig: Record<
   hard:   { label: 'Hard',   color: '#FF5C8A', soft: '#FFD1DE', stars: 3, emoji: '🚀' },
 };
 
-export const MathMenu = () => {
+export const EnglishMenu = () => {
   const {
     setCurrentScreen,
     startGame,
@@ -120,62 +120,48 @@ export const MathMenu = () => {
         className="text-center mb-8"
       >
         <h1 className="font-display text-5xl md:text-6xl text-ink leading-none">
-          Math <span className="rainbow-text">Arena</span>
+          English <span className="rainbow-text">Adventure</span>
         </h1>
         <p className="text-ink-soft text-lg font-bold mt-3">
-          Pick a challenge and play with friends! 🎯
+          Words, sounds, spelling and more! 📚
         </p>
       </motion.div>
 
-      {/* Learn Center banner */}
+      {/* Subject hero strip */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15 }}
-        className="max-w-6xl mx-auto mb-6"
+        className="max-w-6xl mx-auto mb-8"
       >
-        <motion.button
-          onClick={() => setCurrentScreen('learn')}
-          whileHover={{ y: -2, rotate: -0.5 }}
-          whileTap={{ scale: 0.99 }}
-          className="sticker sticker-press w-full p-5 md:p-6 text-left relative overflow-hidden"
-          style={{ background: '#D6F0CE' }}
-        >
-          <div className="absolute inset-x-0 top-0 h-3 bg-grass" />
-
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div
-                className="w-14 h-14 md:w-16 md:h-16 rounded-2xl border-[3px] border-ink bg-grass flex items-center justify-center wobble"
-                style={{ boxShadow: '4px 4px 0 var(--ink)' }}
-              >
-                <GraduationCap className="w-8 h-8 text-paper" strokeWidth={2.5} />
-              </div>
-              <div>
-                <div className="flex items-center gap-2 mb-1 flex-wrap">
-                  <h3 className="font-display text-2xl md:text-3xl text-ink leading-none">
-                    Learning Center
-                  </h3>
-                  <span
-                    className="text-xs font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-berry border-2 border-ink text-paper"
-                    style={{ boxShadow: '2px 2px 0 var(--ink)' }}
-                  >
-                    NEW
-                  </span>
-                </div>
-                <p className="text-ink-soft font-bold text-sm md:text-base">
-                  Practice at your own pace — no timer, no pressure!
-                </p>
-              </div>
-            </div>
+        <div className="sticker p-5 md:p-6 relative overflow-hidden" style={{ background: '#FFD1DE' }}>
+          <div className="absolute inset-x-0 top-0 h-3 bg-berry" />
+          <div className="flex items-center gap-4">
             <div
-              className="hidden md:flex w-12 h-12 rounded-full border-[3px] border-ink bg-paper items-center justify-center text-2xl font-black flex-shrink-0"
-              style={{ boxShadow: '3px 3px 0 var(--ink)' }}
+              className="w-14 h-14 md:w-16 md:h-16 rounded-2xl border-[3px] border-ink bg-berry flex items-center justify-center bouncy"
+              style={{ boxShadow: '4px 4px 0 var(--ink)' }}
             >
-              →
+              <BookOpen className="w-8 h-8 text-paper" strokeWidth={2.5} />
             </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-1 flex-wrap">
+                <h3 className="font-display text-xl md:text-2xl text-ink leading-none">
+                  8 fun word games
+                </h3>
+                <span
+                  className="text-xs font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-grass border-2 border-ink text-paper"
+                  style={{ boxShadow: '2px 2px 0 var(--ink)' }}
+                >
+                  NEW
+                </span>
+              </div>
+              <p className="text-ink-soft font-bold text-sm md:text-base">
+                Spelling • Rhymes • Opposites • Pictures and more!
+              </p>
+            </div>
+            <div className="hidden md:block text-5xl wobble">📖</div>
           </div>
-        </motion.button>
+        </div>
       </motion.div>
 
       {/* Live players */}
@@ -190,7 +176,7 @@ export const MathMenu = () => {
           style={{ background: '#FFFFFF' }}
         >
           <div className="flex -space-x-2">
-            {['🦁', '🐯', '🐻', '🦊'].map((avatar, i) => (
+            {['🐼', '🐯', '🦊', '🦄'].map((avatar, i) => (
               <motion.div
                 key={i}
                 className="w-8 h-8 rounded-full bg-cream border-[2.5px] border-ink flex items-center justify-center text-base"
@@ -206,7 +192,7 @@ export const MathMenu = () => {
             <span className="relative inline-flex rounded-full h-3 w-3 bg-grass" />
           </span>
           <span className="text-ink font-extrabold text-sm">
-            <span className="text-grass">247</span> kids playing now
+            <span className="text-grass">192</span> kids reading now
           </span>
         </div>
       </motion.div>
@@ -218,7 +204,7 @@ export const MathMenu = () => {
         animate="visible"
         className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 max-w-6xl mx-auto"
       >
-        {gameModes.map((mode) => {
+        {englishModes.map((mode) => {
           const info = getModeInfo(mode);
           return (
             <motion.button
@@ -230,7 +216,6 @@ export const MathMenu = () => {
               className="sticker sticker-press p-5 text-left relative overflow-hidden"
               style={{ background: info.softColor }}
             >
-              {/* top stripe */}
               <div className="absolute inset-x-0 top-0 h-2.5" style={{ background: info.color }} />
 
               <div
@@ -267,18 +252,18 @@ export const MathMenu = () => {
         transition={{ delay: 0.5 }}
         className="mt-10 max-w-2xl mx-auto"
       >
-        <div className="sticker p-5" style={{ background: '#FFE5A0' }}>
+        <div className="sticker p-5" style={{ background: '#E5D7FA' }}>
           <div className="flex items-start gap-4">
             <div
-              className="w-12 h-12 rounded-2xl border-[3px] border-ink bg-sun flex items-center justify-center flex-shrink-0 wobble"
+              className="w-12 h-12 rounded-2xl border-[3px] border-ink bg-grape flex items-center justify-center flex-shrink-0 wobble"
               style={{ boxShadow: '3px 3px 0 var(--ink)' }}
             >
-              <Sparkles className="w-6 h-6 text-ink" fill="currentColor" />
+              <Sparkles className="w-6 h-6 text-paper" fill="currentColor" />
             </div>
             <div>
-              <h4 className="font-display text-xl text-ink mb-1">Pro Tip!</h4>
+              <h4 className="font-display text-xl text-ink mb-1">Reading Tip!</h4>
               <p className="text-ink-soft font-bold text-sm">
-                Get 3 in a row to start a streak — every streak earns bonus coins! 🔥
+                Say each word out loud — it really helps you learn how it sounds! 🗣️
               </p>
             </div>
           </div>
@@ -304,7 +289,6 @@ export const MathMenu = () => {
               className="sticker p-7 max-w-md w-full relative"
               style={{ background: '#FFFFFF' }}
             >
-              {/* close handle */}
               <button
                 onClick={() => setShowDifficultyModal(false)}
                 className="absolute -top-4 -right-4 w-10 h-10 rounded-full border-[3px] border-ink bg-tomato text-paper font-black text-lg flex items-center justify-center hover:rotate-90 transition-transform"
@@ -313,7 +297,6 @@ export const MathMenu = () => {
                 ✕
               </button>
 
-              {/* Mode summary */}
               <div className="text-center mb-6">
                 <div
                   className="w-20 h-20 rounded-2xl border-[3px] border-ink flex items-center justify-center text-4xl mx-auto mb-3 bouncy"
@@ -332,7 +315,6 @@ export const MathMenu = () => {
                 </p>
               </div>
 
-              {/* Difficulty buttons */}
               <div className="space-y-3 mb-5">
                 <p className="text-center text-xs font-black uppercase tracking-wider text-ink-soft">
                   Choose how tricky?

@@ -1,0 +1,11 @@
+{
+  "appId": "com.learnitquick.app",
+  "appName": "LearnItQuick",
+  "webDir": "out",
+  "android": {
+    "backgroundColor": "#FFF7E0"
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

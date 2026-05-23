@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 
 class SoundManager {
   private audioContext: AudioContext | null = null;
@@ -12,7 +12,7 @@ class SoundManager {
     try {
       this.audioContext = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
       this.initialized = true;
-    } catch (e) {
+    } catch {
       console.log('Audio not supported');
     }
   }

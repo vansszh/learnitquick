@@ -1,45 +1,56 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useSyncExternalStore } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useGameStore } from '@/store/gameStore';
 import { AnimatedBackground } from '@/components/AnimatedBackground';
 import { HomeScreen } from '@/components/HomeScreen';
 import { MathMenu } from '@/components/MathMenu';
+import { EnglishMenu } from '@/components/EnglishMenu';
 import { GameScreen } from '@/components/GameScreen';
 import { ResultsScreen } from '@/components/ResultsScreen';
 import { LearnScreen } from '@/components/LearnScreen';
 
+// SSR-safe "is mounted on client?" hook — avoids setState-in-effect.
+const subscribe = () => () => {};
+const useMounted = () =>
+  useSyncExternalStore(
+    subscribe,
+    () => true,
+    () => false,
+  );
+
 export const GameApp = () => {
   const { currentScreen } = useGameStore();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useMounted();
 
   if (!mounted) {
+    // Bouncy sticker-style boot spinner that matches the new theme
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex flex-col items-center justify-center gap-6 p-4">
         <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-          className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full"
-        />
+          className="w-20 h-20 rounded-2xl border-[4px] border-ink bg-sun flex items-center justify-center text-4xl"
+          style={{ boxShadow: '6px 6px 0 var(--ink)' }}
+          animate={{ rotate: [0, 12, -12, 0], y: [0, -8, 0] }}
+          transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          🎈
+        </motion.div>
+        <p className="font-display text-2xl text-ink">Loading…</p>
       </div>
     );
   }
 
   const pageVariants = {
-    initial: { opacity: 0, x: 20 },
-    animate: { opacity: 1, x: 0 },
-    exit: { opacity: 0, x: -20 },
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -20 },
   };
 
   return (
     <div className="relative min-h-screen">
       <AnimatedBackground />
-      
+
       <AnimatePresence mode="wait">
         {currentScreen === 'home' && (
           <motion.div
@@ -64,6 +75,19 @@ export const GameApp = () => {
             transition={{ duration: 0.3 }}
           >
             <MathMenu />
+          </motion.div>
+        )}
+
+        {currentScreen === 'english-menu' && (
+          <motion.div
+            key="english-menu"
+            variants={pageVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={{ duration: 0.3 }}
+          >
+            <EnglishMenu />
           </motion.div>
         )}
 

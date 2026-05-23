@@ -1,39 +1,45 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { useGameStore } from '@/store/gameStore';
-import { Sparkles, Coins, Trophy, Zap, ChevronRight, Lock, BookOpen, Calculator } from 'lucide-react';
+import { Coins, Trophy, BookOpen, Calculator, Sparkles } from 'lucide-react';
 
-const avatars = ['🚀', '🦁', '🐯', '🐻', '🐼', '🦊', '🦄', '🐲', '🌟', '🎮', '🎨', '🎪'];
+const avatars = ['🚀', '🦁', '🐯', '🐻', '🐼', '🦊', '🦄', '🐲', '🌟', '🐶', '🎨', '🎪'];
+
+// Each avatar slot rotates through these chip colors for visual variety.
+const avatarBgs = [
+  '#FFC93C', '#FF8E3C', '#FF5C8A', '#9B5DE5',
+  '#4FC3F7', '#2196F3', '#5BC053', '#6FE7B0',
+  '#FF6B6B', '#FFC93C', '#9B5DE5', '#4FC3F7',
+];
 
 export const HomeScreen = () => {
-  const { 
-    playerName, 
-    playerAvatar, 
-    totalCoins, 
-    gamesPlayed, 
+  const {
+    playerName,
+    playerAvatar,
+    totalCoins,
+    gamesPlayed,
     totalCorrect,
-    setPlayerName, 
-    setPlayerAvatar, 
-    setCurrentScreen 
+    setPlayerName,
+    setPlayerAvatar,
+    setCurrentScreen,
   } = useGameStore();
-  
-  const [showNameInput, setShowNameInput] = useState(!playerName);
+
+  const [editingProfile, setEditingProfile] = useState(false);
   const [inputName, setInputName] = useState(playerName);
   const [selectedAvatar, setSelectedAvatar] = useState(playerAvatar);
 
-  useEffect(() => {
-    if (!playerName) {
-      setShowNameInput(true);
-    }
-  }, [playerName]);
+  // Show the name/avatar form whenever the player has no saved name,
+  // or when they've explicitly tapped the avatar to edit. Derived state
+  // avoids the "setState in useEffect" anti-pattern.
+  const showNameInput = !playerName || editingProfile;
 
   const handleStart = () => {
     if (inputName.trim()) {
       setPlayerName(inputName.trim());
       setPlayerAvatar(selectedAvatar);
-      setShowNameInput(false);
+      setEditingProfile(false);
     }
   };
 
@@ -41,104 +47,126 @@ export const HomeScreen = () => {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2,
-      },
+      transition: { staggerChildren: 0.08, delayChildren: 0.15 },
     },
   };
 
   const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 30 },
+    hidden: { opacity: 0, y: 30, scale: 0.95 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: { type: 'spring' as const, stiffness: 100, damping: 12 },
+      scale: 1,
+      transition: { type: 'spring', stiffness: 130, damping: 14 },
     },
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 relative">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 md:p-8 relative">
       <AnimatePresence mode="wait">
         {showNameInput ? (
           <motion.div
             key="name-input"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            className="w-full max-w-md"
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: -20 }}
+            transition={{ type: 'spring', stiffness: 140, damping: 16 }}
+            className="w-full max-w-lg"
           >
-            <div className="glass-strong rounded-3xl p-8 space-y-8">
+            <div className="sticker p-7 md:p-10 space-y-7">
               {/* Logo */}
-              <motion.div 
-                className="text-center"
-                initial={{ y: -20 }}
-                animate={{ y: 0 }}
-              >
+              <div className="text-center">
                 <motion.div
-                  className="inline-block mb-4"
-                  animate={{ rotate: [0, 5, -5, 0] }}
-                  transition={{ duration: 2, repeat: Infinity }}
+                  className="inline-block mb-3 wobble"
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: 'spring', stiffness: 200, damping: 12, delay: 0.2 }}
                 >
-                  <Sparkles className="w-16 h-16 text-yellow-400" />
+                  <div className="text-7xl">🎈</div>
                 </motion.div>
-                <h1 className="text-4xl font-bold gradient-text mb-2">LearnItQuick</h1>
-                <p className="text-gray-400">Let&apos;s make learning fun!</p>
-              </motion.div>
+                <h1 className="font-display text-5xl md:text-6xl rainbow-text leading-none mb-2">
+                  LearnItQuick
+                </h1>
+                <p className="text-ink-soft font-bold">Let&apos;s make learning super fun!</p>
+              </div>
 
-              {/* Avatar Selection */}
-              <div className="space-y-3">
-                <label className="text-sm text-gray-400 block">Choose your avatar</label>
-                <div className="grid grid-cols-6 gap-2">
-                  {avatars.map((avatar) => (
-                    <motion.button
-                      key={avatar}
-                      onClick={() => setSelectedAvatar(avatar)}
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.95 }}
-                      className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl transition-all duration-200 ${
-                        selectedAvatar === avatar
-                          ? 'bg-gradient-to-br from-indigo-500 to-purple-600 ring-2 ring-white/30'
-                          : 'bg-white/5 hover:bg-white/10'
-                      }`}
-                    >
-                      {avatar}
-                    </motion.button>
-                  ))}
+              {/* Avatar selection */}
+              <div>
+                <label className="block text-sm font-extrabold uppercase tracking-wider text-ink-soft mb-3">
+                  Pick your buddy
+                </label>
+                <div className="grid grid-cols-6 gap-3">
+                  {avatars.map((avatar, i) => {
+                    const isActive = selectedAvatar === avatar;
+                    return (
+                      <motion.button
+                        key={avatar}
+                        type="button"
+                        onClick={() => setSelectedAvatar(avatar)}
+                        whileHover={{ scale: 1.08, rotate: -4 }}
+                        whileTap={{ scale: 0.92 }}
+                        className="relative aspect-square rounded-2xl border-[3px] border-ink flex items-center justify-center text-2xl md:text-3xl"
+                        style={{
+                          background: isActive ? avatarBgs[i] : '#FFF7E0',
+                          boxShadow: isActive
+                            ? '4px 4px 0 var(--ink)'
+                            : '2px 2px 0 var(--ink)',
+                          transform: isActive ? 'translate(-1px, -1px)' : 'none',
+                        }}
+                      >
+                        {avatar}
+                        {isActive && (
+                          <motion.div
+                            layoutId="avatar-tick"
+                            className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-grass border-2 border-ink flex items-center justify-center text-xs font-black"
+                          >
+                            ✓
+                          </motion.div>
+                        )}
+                      </motion.button>
+                    );
+                  })}
                 </div>
               </div>
 
-              {/* Name Input */}
-              <div className="space-y-3">
-                <label className="text-sm text-gray-400 block">What&apos;s your name?</label>
+              {/* Name input */}
+              <div>
+                <label className="block text-sm font-extrabold uppercase tracking-wider text-ink-soft mb-3">
+                  What&apos;s your name?
+                </label>
                 <div className="relative">
                   <input
                     type="text"
                     value={inputName}
                     onChange={(e) => setInputName(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleStart()}
-                    placeholder="Enter your name..."
+                    placeholder="Type your name…"
                     maxLength={15}
-                    className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-lg"
+                    className="w-full pl-5 pr-16 py-4 bg-cream border-[3px] border-ink rounded-2xl text-ink text-lg font-bold placeholder:text-ink-soft/60 focus:outline-none focus:bg-paper transition-colors"
+                    style={{ boxShadow: '4px 4px 0 var(--ink)' }}
                   />
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2 text-3xl">
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-xl border-[3px] border-ink bg-sun flex items-center justify-center text-2xl"
+                       style={{ boxShadow: '2px 2px 0 var(--ink)' }}>
                     {selectedAvatar}
                   </div>
                 </div>
               </div>
 
-              {/* Start Button */}
+              {/* Start button */}
               <motion.button
                 onClick={handleStart}
                 disabled={!inputName.trim()}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="w-full py-4 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-xl font-semibold text-lg text-white shadow-lg shadow-indigo-500/30 disabled:opacity-50 disabled:cursor-not-allowed btn-hover-effect relative overflow-hidden"
+                whileHover={!inputName.trim() ? {} : { scale: 1.02 }}
+                whileTap={!inputName.trim() ? {} : { scale: 0.97 }}
+                className={`w-full py-5 rounded-2xl border-[4px] border-ink font-display text-2xl text-ink uppercase tracking-wide transition-all ${
+                  !inputName.trim() ? 'sticker-disabled' : 'sticker-press'
+                }`}
+                style={{
+                  background: '#FFC93C',
+                  boxShadow: '6px 6px 0 var(--ink)',
+                }}
               >
-                <span className="relative z-10 flex items-center justify-center gap-2">
-                  Start Learning
-                  <ChevronRight className="w-5 h-5" />
-                </span>
+                Let&apos;s Go! 🚀
               </motion.button>
             </div>
           </motion.div>
@@ -148,165 +176,148 @@ export const HomeScreen = () => {
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="w-full max-w-4xl"
+            className="w-full max-w-5xl"
           >
-            {/* Header with stats */}
-            <motion.div variants={itemVariants} className="flex justify-between items-center mb-8 px-4">
-              <div className="flex items-center gap-4">
-                <motion.div
-                  whileHover={{ scale: 1.1, rotate: 10 }}
-                  className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-3xl shadow-lg shadow-indigo-500/30 cursor-pointer"
-                  onClick={() => setShowNameInput(true)}
-                >
-                  {playerAvatar}
-                </motion.div>
-                <div>
-                  <p className="text-gray-400 text-sm">Welcome back!</p>
-                  <h2 className="text-xl font-bold text-white">{playerName}</h2>
-                </div>
-              </div>
-              
-              <div className="flex items-center gap-6">
-                <motion.div 
-                  className="flex items-center gap-2 bg-white/5 px-4 py-2 rounded-full"
-                  whileHover={{ scale: 1.05 }}
-                >
-                  <Coins className="w-5 h-5 text-yellow-400" />
-                  <span className="font-bold text-yellow-400">{totalCoins}</span>
-                </motion.div>
-                
-                <motion.div 
-                  className="flex items-center gap-2 bg-white/5 px-4 py-2 rounded-full"
-                  whileHover={{ scale: 1.05 }}
-                >
-                  <Trophy className="w-5 h-5 text-amber-500" />
-                  <span className="font-semibold text-white">{gamesPlayed}</span>
-                </motion.div>
-              </div>
-            </motion.div>
-
-            {/* Title */}
-            <motion.div variants={itemVariants} className="text-center mb-12">
-              <motion.h1 
-                className="text-5xl md:text-6xl font-bold gradient-text mb-4"
-                animate={{ 
-                  textShadow: [
-                    '0 0 20px rgba(99, 102, 241, 0.5)',
-                    '0 0 40px rgba(244, 114, 182, 0.5)',
-                    '0 0 20px rgba(99, 102, 241, 0.5)',
-                  ]
-                }}
-                transition={{ duration: 3, repeat: Infinity }}
+            {/* Header strip */}
+            <motion.div
+              variants={itemVariants}
+              className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8"
+            >
+              {/* Player chip */}
+              <motion.button
+                whileHover={{ scale: 1.03, rotate: -1 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => setEditingProfile(true)}
+                className="sticker-sm sticker-press-sm flex items-center gap-3 px-4 py-3 self-start"
+                style={{ background: '#FFD1DE' }}
               >
-                Choose Your Subject
-              </motion.h1>
-              <p className="text-gray-400 text-lg">Select a subject to start learning!</p>
+                <div className="w-12 h-12 rounded-xl border-[3px] border-ink bg-sun flex items-center justify-center text-2xl"
+                     style={{ boxShadow: '2px 2px 0 var(--ink)' }}>
+                  {playerAvatar}
+                </div>
+                <div className="text-left pr-2">
+                  <p className="text-xs font-black uppercase tracking-wider text-ink-soft">Hi there!</p>
+                  <p className="font-display text-xl text-ink leading-tight">{playerName}</p>
+                </div>
+              </motion.button>
+
+              {/* Stats chips */}
+              <div className="flex gap-3">
+                <Stat icon={<Coins className="w-5 h-5" />} value={totalCoins} bg="#FFC93C" />
+                <Stat icon={<Trophy className="w-5 h-5" />} value={gamesPlayed} bg="#5BC053" />
+              </div>
             </motion.div>
 
-            {/* Subject Cards */}
-            <div className="grid md:grid-cols-2 gap-6 px-4">
-              {/* Math Card - Active */}
+            {/* Title block */}
+            <motion.div variants={itemVariants} className="text-center mb-10">
               <motion.div
+                className="inline-block mb-2"
+                animate={{ rotate: [-3, 3, -3] }}
+                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+              >
+                <div className="font-display text-5xl md:text-7xl text-ink leading-none mb-1">
+                  Pick a <span className="rainbow-text">subject!</span>
+                </div>
+              </motion.div>
+              <p className="text-ink-soft text-lg font-bold mt-3">
+                Tap a card to start your adventure ✨
+              </p>
+            </motion.div>
+
+            {/* Subject cards */}
+            <div className="grid md:grid-cols-2 gap-6 md:gap-8">
+              {/* Math */}
+              <motion.button
                 variants={itemVariants}
-                whileHover={{ scale: 1.02, y: -5 }}
+                whileHover={{ y: -4, rotate: -1 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setCurrentScreen('math-menu')}
-                className="group cursor-pointer"
+                className="sticker sticker-press text-left p-7 relative overflow-hidden"
+                style={{ background: '#FFE5A0' }}
               >
-                <div className="glass-strong rounded-3xl p-8 relative overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-indigo-500/20 border border-white/10 hover:border-indigo-500/30">
-                  {/* Background gradient */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-purple-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  
-                  {/* Floating icon */}
-                  <motion.div
-                    className="relative z-10 mb-6"
-                    animate={{ y: [0, -8, 0] }}
-                    transition={{ duration: 3, repeat: Infinity }}
-                  >
-                    <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/30">
-                      <Calculator className="w-10 h-10 text-white" />
-                    </div>
-                  </motion.div>
-                  
-                  <h3 className="text-2xl font-bold text-white mb-2 relative z-10">Mathematics</h3>
-                  <p className="text-gray-400 mb-6 relative z-10">Tables, Addition, Subtraction & more</p>
-                  
-                  <div className="flex items-center justify-between relative z-10">
-                    <div className="flex items-center gap-2 text-indigo-400">
-                      <Zap className="w-4 h-4" />
-                      <span className="text-sm">8 Activities</span>
-                    </div>
-                    <motion.div
-                      className="w-10 h-10 rounded-full bg-indigo-500/20 flex items-center justify-center group-hover:bg-indigo-500 transition-colors"
-                      whileHover={{ x: 5 }}
-                    >
-                      <ChevronRight className="w-5 h-5 text-indigo-400 group-hover:text-white" />
-                    </motion.div>
-                  </div>
-                  
-                  {/* Decorative elements */}
-                  <div className="absolute top-4 right-4 text-6xl opacity-10">📐</div>
-                </div>
-              </motion.div>
+                {/* Top color stripe */}
+                <div className="absolute inset-x-0 top-0 h-3 bg-mango" />
 
-              {/* English Card - Locked */}
-              <motion.div
-                variants={itemVariants}
-                className="relative"
-              >
-                <div className="glass rounded-3xl p-8 relative overflow-hidden opacity-60 cursor-not-allowed border border-white/5">
-                  {/* Lock overlay */}
-                  <div className="absolute inset-0 bg-black/40 backdrop-blur-sm z-20 flex items-center justify-center">
-                    <motion.div
-                      animate={{ y: [0, -5, 0] }}
-                      transition={{ duration: 2, repeat: Infinity }}
-                      className="text-center"
-                    >
-                      <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center mx-auto mb-3">
-                        <Lock className="w-8 h-8 text-gray-400" />
-                      </div>
-                      <p className="text-gray-400 font-medium">Coming Soon</p>
-                    </motion.div>
+                <div className="flex items-start justify-between gap-4 mb-4">
+                  <div className="w-20 h-20 rounded-2xl border-[3px] border-ink bg-mango flex items-center justify-center bouncy"
+                       style={{ boxShadow: '4px 4px 0 var(--ink)' }}>
+                    <Calculator className="w-10 h-10 text-paper" strokeWidth={3} />
                   </div>
-                  
-                  <div className="mb-6">
-                    <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-pink-500/50 to-rose-600/50 flex items-center justify-center">
-                      <BookOpen className="w-10 h-10 text-white/50" />
-                    </div>
-                  </div>
-                  
-                  <h3 className="text-2xl font-bold text-white/50 mb-2">English</h3>
-                  <p className="text-gray-500 mb-6">Reading, Spelling & Vocabulary</p>
-                  
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-gray-500">
-                      <Zap className="w-4 h-4" />
-                      <span className="text-sm">Coming Soon</span>
-                    </div>
-                  </div>
-                  
-                  <div className="absolute top-4 right-4 text-6xl opacity-5">📚</div>
+                  <span className="text-sm font-black uppercase tracking-wider px-3 py-1 rounded-full bg-grass border-2 border-ink text-paper"
+                        style={{ boxShadow: '2px 2px 0 var(--ink)' }}>
+                    Ready!
+                  </span>
                 </div>
-              </motion.div>
+
+                <h3 className="font-display text-3xl md:text-4xl text-ink mb-2">Math</h3>
+                <p className="text-ink-soft font-bold mb-5">
+                  Tables · Adding · Subtracting · Patterns
+                </p>
+
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-ink font-extrabold">
+                    <Sparkles className="w-5 h-5 text-mango" fill="currentColor" />
+                    <span>8 fun activities</span>
+                  </div>
+                  <div className="w-12 h-12 rounded-full border-[3px] border-ink bg-paper flex items-center justify-center text-2xl font-black"
+                       style={{ boxShadow: '3px 3px 0 var(--ink)' }}>
+                    →
+                  </div>
+                </div>
+
+                {/* Decorative emoji */}
+                <div className="absolute -bottom-4 -right-2 text-7xl opacity-30 wobble pointer-events-none">📐</div>
+              </motion.button>
+
+              {/* English (now unlocked!) */}
+              <motion.button
+                variants={itemVariants}
+                whileHover={{ y: -4, rotate: 1 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => setCurrentScreen('english-menu')}
+                className="sticker sticker-press text-left p-7 relative overflow-hidden"
+                style={{ background: '#FFD1DE' }}
+              >
+                <div className="absolute inset-x-0 top-0 h-3 bg-berry" />
+
+                <div className="flex items-start justify-between gap-4 mb-4">
+                  <div className="w-20 h-20 rounded-2xl border-[3px] border-ink bg-berry flex items-center justify-center bouncy"
+                       style={{ boxShadow: '4px 4px 0 var(--ink)' }}>
+                    <BookOpen className="w-10 h-10 text-paper" strokeWidth={3} />
+                  </div>
+                  <span className="text-sm font-black uppercase tracking-wider px-3 py-1 rounded-full bg-grass border-2 border-ink text-paper"
+                        style={{ boxShadow: '2px 2px 0 var(--ink)' }}>
+                    NEW!
+                  </span>
+                </div>
+
+                <h3 className="font-display text-3xl md:text-4xl text-ink mb-2">English</h3>
+                <p className="text-ink-soft font-bold mb-5">
+                  Spelling · Rhymes · Words · Phonics
+                </p>
+
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-ink font-extrabold">
+                    <Sparkles className="w-5 h-5 text-berry" fill="currentColor" />
+                    <span>8 word games</span>
+                  </div>
+                  <div className="w-12 h-12 rounded-full border-[3px] border-ink bg-paper flex items-center justify-center text-2xl font-black"
+                       style={{ boxShadow: '3px 3px 0 var(--ink)' }}>
+                    →
+                  </div>
+                </div>
+
+                <div className="absolute -bottom-4 -right-2 text-7xl opacity-30 wobble pointer-events-none">📚</div>
+              </motion.button>
             </div>
 
-            {/* Stats bar */}
-            <motion.div 
-              variants={itemVariants}
-              className="mt-12 glass rounded-2xl p-6 mx-4"
-            >
-              <div className="grid grid-cols-3 gap-4 text-center">
-                <div>
-                  <p className="text-3xl font-bold text-white">{gamesPlayed}</p>
-                  <p className="text-gray-400 text-sm">Games Played</p>
-                </div>
-                <div>
-                  <p className="text-3xl font-bold text-green-400">{totalCorrect}</p>
-                  <p className="text-gray-400 text-sm">Correct Answers</p>
-                </div>
-                <div>
-                  <p className="text-3xl font-bold gradient-text-gold">{totalCoins}</p>
-                  <p className="text-gray-400 text-sm">Total Coins</p>
+            {/* Stats footer */}
+            <motion.div variants={itemVariants} className="mt-10">
+              <div className="sticker p-6" style={{ background: '#FFFFFF' }}>
+                <div className="grid grid-cols-3 gap-4 text-center">
+                  <StatBig label="Games" value={gamesPlayed} color="#9B5DE5" />
+                  <StatBig label="Correct" value={totalCorrect} color="#5BC053" />
+                  <StatBig label="Coins" value={totalCoins} color="#FFC93C" />
                 </div>
               </div>
             </motion.div>
@@ -316,3 +327,22 @@ export const HomeScreen = () => {
     </div>
   );
 };
+
+const Stat = ({ icon, value, bg }: { icon: React.ReactNode; value: number; bg: string }) => (
+  <div
+    className="flex items-center gap-2 px-4 py-2 rounded-2xl border-[3px] border-ink font-display text-xl text-ink"
+    style={{ background: bg, boxShadow: '4px 4px 0 var(--ink)' }}
+  >
+    {icon}
+    <span>{value}</span>
+  </div>
+);
+
+const StatBig = ({ label, value, color }: { label: string; value: number; color: string }) => (
+  <div>
+    <p className="font-display text-4xl md:text-5xl" style={{ color }}>
+      {value}
+    </p>
+    <p className="text-ink-soft text-sm font-extrabold uppercase tracking-wider">{label}</p>
+  </div>
+);

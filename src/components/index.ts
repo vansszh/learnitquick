@@ -1,6 +1,7 @@
 export { AnimatedBackground } from './AnimatedBackground';
 export { HomeScreen } from './HomeScreen';
 export { MathMenu } from './MathMenu';
+export { EnglishMenu } from './EnglishMenu';
 export { GameScreen } from './GameScreen';
 export { ResultsScreen } from './ResultsScreen';
 export { GameApp } from './GameApp';

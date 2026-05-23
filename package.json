@@ -6,9 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "android:sync": "next build && cap sync android && node scripts/strip-android-apk.js",
+    "android:apk": "node scripts/build-apk.js debug",
+    "android:apk:release": "node scripts/build-apk.js release"
   },
   "dependencies": {
+    "@capacitor/core": "^8.3.4",
     "@heroicons/react": "^2.2.0",
     "framer-motion": "^12.26.2",
     "lucide-react": "^0.562.0",
@@ -18,6 +22,8 @@
     "zustand": "^5.0.10"
   },
   "devDependencies": {
+    "@capacitor/android": "^8.3.4",
+    "@capacitor/cli": "^8.3.4",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

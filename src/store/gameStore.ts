@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 export type GameMode = 
+  // Math
   | 'tables' 
   | 'comparison' 
   | 'addition' 
@@ -9,7 +10,18 @@ export type GameMode =
   | 'multiplication'
   | 'carry-addition'
   | 'counting'
-  | 'number-sequence';
+  | 'number-sequence'
+  // English
+  | 'spelling'
+  | 'rhymes'
+  | 'opposites'
+  | 'synonyms'
+  | 'phonics'
+  | 'missing-letter'
+  | 'plurals'
+  | 'picture-match';
+
+export type Subject = 'math' | 'english';
 
 export type Difficulty = 'easy' | 'medium' | 'hard';
 
@@ -26,6 +38,8 @@ export interface Player {
 export interface Question {
   id: string;
   question: string;
+  /** Optional visual shown above the question text (e.g. an emoji). */
+  media?: { type: 'emoji'; value: string };
   options: (string | number)[];
   correctAnswer: string | number;
   type: GameMode;
@@ -41,7 +55,7 @@ export interface GameState {
   totalCorrect: number;
   
   // Current game state
-  currentScreen: 'home' | 'subjects' | 'math-menu' | 'game' | 'results' | 'learn';
+  currentScreen: 'home' | 'subjects' | 'math-menu' | 'english-menu' | 'game' | 'results' | 'learn';
   currentGameMode: GameMode | null;
   currentDifficulty: Difficulty;
   currentQuestion: number;
