@@ -123,10 +123,9 @@ export const metadata: Metadata = {
     address: false,
     date: false,
   },
-  // Paste the verification code from Google Search Console here:
-  //   verification: { google: 'YOUR-CODE-HERE' }
+  // Verification codes — paste tokens from each Search Console property here.
   verification: {
-    google: '',
+    google: '36WER1zoK-t269gTOeEuG9fs8YAlkAtyrXJ9uVN3pNY',
     other: {
       // 'msvalidate.01': 'YOUR-BING-CODE',
       // 'yandex-verification': 'YOUR-YANDEX-CODE',
