@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { useGameStore } from '@/store/gameStore';
 import { Coins, Trophy, BookOpen, Calculator, Sparkles } from 'lucide-react';
+import { Contact } from '@/components/Contact';
 
 const avatars = ['🚀', '🦁', '🐯', '🐻', '🐼', '🦊', '🦄', '🐲', '🌟', '🐶', '🎨', '🎪'];
 
@@ -320,6 +321,11 @@ export const HomeScreen = () => {
                   <StatBig label="Coins" value={totalCoins} color="#FFC93C" />
                 </div>
               </div>
+            </motion.div>
+
+            {/* Contact */}
+            <motion.div variants={itemVariants} className="mt-6">
+              <Contact />
             </motion.div>
           </motion.div>
         )}

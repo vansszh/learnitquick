@@ -10,9 +10,9 @@ import {
   Wifi,
   ShieldCheck,
   Sparkles,
-  Heart,
 } from 'lucide-react';
 import { AnimatedBackground } from '@/components/AnimatedBackground';
+import { Contact } from '@/components/Contact';
 
 const APK_URL = '/learnitquick.apk';
 const APK_SIZE_MB = '4.5';
@@ -214,18 +214,8 @@ export const ApplicationContent = () => {
             </p>
           </motion.div>
 
-          {/* Footer */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.1 }}
-            className="text-center pb-4"
-          >
-            <p className="text-ink-soft font-bold flex items-center justify-center gap-1 text-sm">
-              Made with{' '}
-              <Heart className="w-4 h-4 text-berry inline" fill="currentColor" /> for kids
-            </p>
-          </motion.div>
+          {/* Footer / Contact */}
+          <Contact delay={1.1} />
         </div>
       </div>
     </div>

@@ -7,3 +7,4 @@ export { ResultsScreen } from './ResultsScreen';
 export { GameApp } from './GameApp';
 export { LoadingScreen } from './LoadingScreen';
 export { LearnScreen } from './LearnScreen';
+export { Contact } from './Contact';
